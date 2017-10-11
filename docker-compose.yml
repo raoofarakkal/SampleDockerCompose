@@ -1,0 +1,34 @@
+version: '2'
+services:
+  web_etrain:
+    container_name: DkWwwEtrain
+    image: raoofabdul/ub14.04php5.5.9
+    environment:
+      VIRTUAL_HOST: etrain.dkwww.local
+    ports:
+      - "80:80"
+    volumes:
+      - ./config/apache-etraining.conf:/etc/apache2/sites-enabled/etraining.conf
+      - ./www/e-training:/var/www/e-training:rw
+      - ./www/siteConfig/htaccess:/var/www/e-training/.htaccess
+      - ./www/siteFiles:/var/www/e-training/sites/default/files
+      - ./www/siteConfig/settings.php:/var/www/e-training/sites/default/settings.php
+      - ./www/siteConfig/local.settings.inc:/var/www/e-training/sites/default/local.settings.inc
+    links:
+      - db_etrain
+  db_etrain:
+    container_name: DkDbEtrain
+    image: raoofabdul/mysql.5.5.57
+    environment:
+      VIRTUAL_HOST: etrain.dkdb.local
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: etraining
+      MYSQL_USER: etraining
+      MYSQL_PASSWORD: etraining
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db:/var/lib/mysql:rw
+      - ./db_backup:/backup:rw
+      - ./db_conf/my.cnf:/etc/mysql/my.cnf
+#      - ./db_backup:/docker-entrypoint-initdb.d
